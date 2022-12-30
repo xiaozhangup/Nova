@@ -63,11 +63,15 @@ internal class RegionFile(val world: World, val file: File, val regionX: Int, va
     }
     
     fun init() {
-        if (file.length() != 0L) {
-            readFile(DataInputStream(file.inputStream()))
+        try {
+            if (file.length() != 0L) {
+                readFile(DataInputStream(file.inputStream()))
+            }
+        } catch (e:Exception) {
+            throw IllegalStateException("Failed to read region file ${file.absolutePath}", e)
         }
     }
-    
+
     private fun readFile(dis: DataInputStream) {
         if (dis.readInt() != MAGIC || dis.readByte() != FILE_VERSION.toByte())
             throw IllegalStateException(file.absolutePath + " is not a valid region file")
